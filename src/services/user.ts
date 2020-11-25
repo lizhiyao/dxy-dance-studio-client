@@ -5,7 +5,7 @@ import { request } from 'umi';
 // }
 
 export async function queryCurrent() {
-  return request<API.CurrentUser>('/dance-api/auth/get-current-user');
+  return request('/dance-api/auth/get-current-user');
 }
 
 // export async function queryNotices(): Promise<any> {

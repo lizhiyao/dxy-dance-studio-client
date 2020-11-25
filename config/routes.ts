@@ -1,4 +1,5 @@
 ﻿export default [
+  // 登录
   {
     path: '/user',
     layout: false,
@@ -10,32 +11,27 @@
       },
     ],
   },
+  // 课表
   {
-    path: '/welcome',
-    name: 'welcome',
+    path: '/courses',
+    name: 'courses',
     icon: 'smile',
-    component: './Welcome',
+    component: './Courses',
   },
   {
     path: '/admin',
     name: 'admin',
     icon: 'crown',
-    access: 'canAdmin',
+    access: 'canVisit',
     component: './Admin',
     routes: [
       {
-        path: '/admin/sub-page',
-        name: 'sub-page',
+        path: '/admin/courses',
+        name: 'manage-courses',
         icon: 'smile',
         component: './Welcome',
       },
     ],
-  },
-  {
-    name: 'list.table-list',
-    icon: 'table',
-    path: '/list',
-    component: './ListTableList',
   },
   {
     path: '/',

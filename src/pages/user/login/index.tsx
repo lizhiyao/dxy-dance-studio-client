@@ -2,10 +2,9 @@ import { LockTwoTone, UserOutlined } from '@ant-design/icons';
 import { Alert, Tabs, message } from 'antd';
 import React, { useState } from 'react';
 import ProForm, { ProFormText } from '@ant-design/pro-form';
-import { useIntl, Link, history, FormattedMessage, SelectLang } from 'umi';
+import { useIntl, Link, history, SelectLang } from 'umi';
 import Footer from '@/components/Footer';
 import { accountLogin, LoginParamsType } from '@/services/login';
-
 import styles from './index.less';
 
 const LoginMessage: React.FC<{
@@ -20,13 +19,15 @@ const LoginMessage: React.FC<{
     showIcon
   />
 );
-
 /**
  * 此方法会跳转到 redirect 参数所在的位置
  */
+
 const goto = () => {
   const { query } = history.location;
-  const { redirect } = query as { redirect: string };
+  const { redirect } = query as {
+    redirect: string;
+  };
   window.location.href = redirect || '/';
 };
 
@@ -38,6 +39,7 @@ const Login: React.FC<{}> = () => {
 
   const handleSubmit = async (values: LoginParamsType) => {
     setSubmitting(true);
+
     try {
       // 登录
       const msg = await accountLogin({ ...values });
@@ -53,11 +55,11 @@ const Login: React.FC<{}> = () => {
     } catch (error) {
       message.error('登录失败，请重试！');
     }
+
     setSubmitting(false);
   };
 
   const { status, type: loginType } = userLoginState;
-
   return (
     <div className={styles.container}>
       <div className={styles.lang}>{SelectLang && <SelectLang />}</div>
@@ -128,12 +130,7 @@ const Login: React.FC<{}> = () => {
                   rules={[
                     {
                       required: true,
-                      message: (
-                        <FormattedMessage
-                          id="pages.login.username.required"
-                          defaultMessage="请输入用户名!"
-                        />
-                      ),
+                      message: '用户名是必填项！',
                     },
                   ]}
                 />
@@ -147,12 +144,7 @@ const Login: React.FC<{}> = () => {
                   rules={[
                     {
                       required: true,
-                      message: (
-                        <FormattedMessage
-                          id="pages.login.password.required"
-                          defaultMessage="请输入密码！"
-                        />
-                      ),
+                      message: '密码是必填项！',
                     },
                   ]}
                 />

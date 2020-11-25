@@ -1,9 +1,8 @@
 import { Tooltip, Tag, Space } from 'antd';
 import { QuestionCircleOutlined } from '@ant-design/icons';
 import React from 'react';
-import { useModel, SelectLang } from 'umi';
+import { useModel } from 'umi';
 import Avatar from './AvatarDropdown';
-import HeaderSearch from '../HeaderSearch';
 import styles from './index.less';
 
 export type SiderTheme = 'light' | 'dark';
@@ -29,7 +28,7 @@ const GlobalHeaderRight: React.FC<{}> = () => {
   }
   return (
     <Space className={className}>
-      <HeaderSearch
+      {/* <HeaderSearch
         className={`${styles.action} ${styles.search}`}
         placeholder="站内搜索"
         defaultValue="umi ui"
@@ -51,7 +50,7 @@ const GlobalHeaderRight: React.FC<{}> = () => {
         // onSearch={value => {
         //   console.log('input', value);
         // }}
-      />
+      /> */}
       <Tooltip title="使用文档">
         <span
           className={styles.action}
@@ -63,12 +62,13 @@ const GlobalHeaderRight: React.FC<{}> = () => {
         </span>
       </Tooltip>
       <Avatar />
+
       {REACT_APP_ENV && (
         <span>
           <Tag color={ENVTagColor[REACT_APP_ENV]}>{REACT_APP_ENV}</Tag>
         </span>
       )}
-      <SelectLang className={styles.action} />
+      {/* <SelectLang className={styles.action} /> */}
     </Space>
   );
 };
