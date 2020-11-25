@@ -1,22 +1,39 @@
 import { PlusOutlined } from '@ant-design/icons';
-import { Button, Divider, message, Input, Drawer } from 'antd';
+import { Button, message, Drawer } from 'antd';
 import React, { useState, useRef } from 'react';
-import { PageContainer, FooterToolbar } from '@ant-design/pro-layout';
+import { PageContainer } from '@ant-design/pro-layout';
 import ProTable, { ProColumns, ActionType } from '@ant-design/pro-table';
 import ProDescriptions from '@ant-design/pro-descriptions';
 import CreateForm from './components/CreateForm';
 import UpdateForm, { FormValueType } from './components/UpdateForm';
 import { TableListItem } from './data.d';
-import { queryRule, updateRule, addRule, removeRule } from './service';
+import { getCourses, updateRule, addCourse } from './service';
+
+const hour = 24 * 60 * 60;
+const minute = 60 * 60;
+const second = 60;
+
+const timeNumToString = (timeNum: number) => {
+  const H = timeNum / hour;
+  const M = (timeNum - H * minute) / minute;
+  const S = (timeNum - H * minute * second - M * second) / second;
+
+  return `${H.toFixed(0)}:${M.toFixed(0)}:${S.toFixed(0)}`;
+};
+
+const timeStrToNumber = (timeStr: string) => {
+  const [H, M, S] = timeStr.split(':');
+  return Number(H) * hour + Number(M) * minute + Number(S) * second;
+};
 
 /**
  * 添加节点
  * @param fields
  */
-const handleAdd = async (fields: TableListItem) => {
+const handleAdd = async (fields: any) => {
   const hide = message.loading('正在添加');
   try {
-    await addRule({ ...fields });
+    await addCourse({ ...fields, id: 0 });
     hide();
     message.success('添加成功');
     return true;
@@ -50,118 +67,142 @@ const handleUpdate = async (fields: FormValueType) => {
   }
 };
 
-/**
- *  删除节点
- * @param selectedRows
- */
-const handleRemove = async (selectedRows: TableListItem[]) => {
-  const hide = message.loading('正在删除');
-  if (!selectedRows) return true;
-  try {
-    await removeRule({
-      key: selectedRows.map((row) => row.key),
-    });
-    hide();
-    message.success('删除成功，即将刷新');
-    return true;
-  } catch (error) {
-    hide();
-    message.error('删除失败，请重试');
-    return false;
-  }
-};
-
 const TableList: React.FC<{}> = () => {
   const [createModalVisible, handleModalVisible] = useState<boolean>(false);
   const [updateModalVisible, handleUpdateModalVisible] = useState<boolean>(false);
   const [stepFormValues, setStepFormValues] = useState({});
   const actionRef = useRef<ActionType>();
   const [row, setRow] = useState<TableListItem>();
-  const [selectedRowsState, setSelectedRows] = useState<TableListItem[]>([]);
   const columns: ProColumns<TableListItem>[] = [
     {
-      title: '规则名称',
+      title: '序号',
+      dataIndex: 'index',
+      valueType: 'indexBorder',
+    },
+    {
+      title: '课程名称',
       dataIndex: 'name',
-      tip: '规则名称是唯一的 key',
-      formItemProps: {
-        rules: [
-          {
-            required: true,
-            message: '规则名称为必填项',
-          },
-        ],
-      },
-      render: (dom, entity) => {
-        return <a onClick={() => setRow(entity)}>{dom}</a>;
-      },
     },
     {
-      title: '描述',
-      dataIndex: 'desc',
-      valueType: 'textarea',
-    },
-    {
-      title: '服务调用次数',
-      dataIndex: 'callNo',
-      sorter: true,
-      hideInForm: true,
-      renderText: (val: string) => `${val} 万`,
-    },
-    {
-      title: '状态',
-      dataIndex: 'status',
-      hideInForm: true,
+      title: '课程类型',
+      dataIndex: 'type',
+      valueType: 'select',
       valueEnum: {
-        0: { text: '关闭', status: 'Default' },
-        1: { text: '运行中', status: 'Processing' },
-        2: { text: '已上线', status: 'Success' },
-        3: { text: '异常', status: 'Error' },
+        1: {
+          text: '基础课',
+        },
+        2: {
+          text: '进阶课',
+        },
+      },
+      renderText: (val) => {
+        let typeStr = '未知';
+        if (val === 1) {
+          typeStr = '基础课';
+        } else if (val === 2) {
+          typeStr = '进阶课';
+        }
+        return typeStr;
       },
     },
     {
-      title: '上次调度时间',
-      dataIndex: 'updatedAt',
-      sorter: true,
-      valueType: 'dateTime',
-      hideInForm: true,
-      renderFormItem: (item, { defaultRender, ...rest }, form) => {
-        const status = form.getFieldValue('status');
-        if (`${status}` === '0') {
-          return false;
-        }
-        if (`${status}` === '3') {
-          return <Input {...rest} placeholder="请输入异常原因！" />;
-        }
-        return defaultRender(item);
+      title: '星期几',
+      dataIndex: 'dayOfTheWeek',
+      valueType: 'select',
+      valueEnum: {
+        1: {
+          text: '星期一',
+        },
+        2: {
+          text: '星期二',
+        },
+        3: {
+          text: '星期三',
+        },
+        4: {
+          text: '星期四',
+        },
+        5: {
+          text: '星期五',
+        },
       },
+      sorter: true,
+      renderText: (val) => {
+        let dayStr = 'X';
+        if (val === 1) {
+          dayStr = '一';
+        } else if (val === 2) {
+          dayStr = '二';
+        } else if (val === 3) {
+          dayStr = '三';
+        } else if (val === 4) {
+          dayStr = '四';
+        } else if (val === 5) {
+          dayStr = '五';
+        }
+        return `星期${dayStr}`;
+      },
+    },
+    {
+      title: '开始时间',
+      dataIndex: 'startTime',
+      valueType: 'time',
+      renderText: (val) => {
+        console.log(timeNumToString(val));
+        return timeNumToString(val);
+      },
+    },
+    {
+      title: '结束时间',
+      dataIndex: 'endTime',
+      valueType: 'time',
+      sorter: true,
+      renderText: (val) => timeNumToString(val),
+    },
+    {
+      title: '授课老师',
+      dataIndex: 'teacher',
+      sorter: true,
+    },
+    {
+      title: '上课地址',
+      dataIndex: 'address',
+      sorter: true,
     },
     {
       title: '操作',
       dataIndex: 'option',
       valueType: 'option',
-      render: (_, record) => (
-        <>
-          <a
-            onClick={() => {
-              handleUpdateModalVisible(true);
-              setStepFormValues(record);
-            }}
-          >
-            配置
-          </a>
-          <Divider type="vertical" />
-          <a href="">订阅警报</a>
-        </>
-      ),
+      render: (_, record) => [
+        <a
+          key="edit"
+          onClick={() => {
+            handleUpdateModalVisible(true);
+            setStepFormValues(record);
+          }}
+        >
+          编辑
+        </a>,
+        <a
+          key="delete"
+          onClick={() => {
+            handleUpdateModalVisible(true);
+            setStepFormValues(record);
+          }}
+        >
+          删除
+        </a>,
+      ],
     },
   ];
 
   return (
     <PageContainer>
+      {/* 课程列表 */}
       <ProTable<TableListItem>
-        headerTitle="查询表格"
+        headerTitle="课程列表"
         actionRef={actionRef}
-        rowKey="key"
+        rowKey="id"
         search={{
           labelWidth: 120,
         }}
@@ -170,39 +211,23 @@ const TableList: React.FC<{}> = () => {
             <PlusOutlined /> 新建
           </Button>,
         ]}
-        request={(params, sorter, filter) => queryRule({ ...params, sorter, filter })}
+        request={(params, sorter, filter) => getCourses({ ...params, sorter, filter })}
         columns={columns}
-        rowSelection={{
-          onChange: (_, selectedRows) => setSelectedRows(selectedRows),
-        }}
       />
-      {selectedRowsState?.length > 0 && (
-        <FooterToolbar
-          extra={
-            <div>
-              已选择 <a style={{ fontWeight: 600 }}>{selectedRowsState.length}</a> 项&nbsp;&nbsp;
-              <span>
-                服务调用次数总计 {selectedRowsState.reduce((pre, item) => pre + item.callNo, 0)} 万
-              </span>
-            </div>
-          }
-        >
-          <Button
-            onClick={async () => {
-              await handleRemove(selectedRowsState);
-              setSelectedRows([]);
-              actionRef.current?.reloadAndRest?.();
-            }}
-          >
-            批量删除
-          </Button>
-          <Button type="primary">批量审批</Button>
-        </FooterToolbar>
-      )}
+
+      {/* 新增课程 */}
       <CreateForm onCancel={() => handleModalVisible(false)} modalVisible={createModalVisible}>
         <ProTable<TableListItem, TableListItem>
           onSubmit={async (value) => {
-            const success = await handleAdd(value);
+            const course = {
+              ...value,
+              type: Number(value.type),
+              dayOfTheWeek: Number(value.dayOfTheWeek),
+              startTime: timeStrToNumber(value.startTime),
+              endTime: timeStrToNumber(value.endTime),
+            };
+
+            const success = await handleAdd(course);
             if (success) {
               handleModalVisible(false);
               if (actionRef.current) {
@@ -210,11 +235,12 @@ const TableList: React.FC<{}> = () => {
               }
             }
           }}
-          rowKey="key"
+          rowKey="id"
           type="form"
           columns={columns}
         />
       </CreateForm>
+
       {stepFormValues && Object.keys(stepFormValues).length ? (
         <UpdateForm
           onSubmit={async (value) => {

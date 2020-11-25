@@ -34,6 +34,12 @@
     ],
   },
   {
+    name: 'list.table-list',
+    icon: 'table',
+    path: '/list',
+    component: './ListTableList',
+  },
+  {
     path: '/',
     redirect: '/welcome',
   },

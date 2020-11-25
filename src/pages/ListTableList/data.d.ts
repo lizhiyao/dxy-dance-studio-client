@@ -11,6 +11,10 @@ export interface TableListItem {
   updatedAt: Date;
   createdAt: Date;
   progress: number;
+  type: string;
+  dayOfTheWeek: string;
+  startTime: string;
+  endTime: string;
 }
 
 export interface TableListPagination {

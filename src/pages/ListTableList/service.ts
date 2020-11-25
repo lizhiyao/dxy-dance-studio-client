@@ -1,10 +1,11 @@
 import { request } from 'umi';
 import { TableListParams, TableListItem } from './data.d';
 
-export async function queryRule(params?: TableListParams) {
-  return request('/api/rule', {
+// 获取全部课程
+export async function getCourses(params?: TableListParams) {
+  return request('/dance-api/courses', {
     params,
-  });
+  }).then((ret) => ret.data);
 }
 
 export async function removeRule(params: { key: number[] }) {
@@ -17,8 +18,8 @@ export async function removeRule(params: { key: number[] }) {
   });
 }
 
-export async function addRule(params: TableListItem) {
-  return request('/api/rule', {
+export async function addCourse(params: TableListItem) {
+  return request('/dance-api/auth/update-course', {
     method: 'POST',
     data: {
       ...params,
