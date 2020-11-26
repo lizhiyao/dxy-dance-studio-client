@@ -4,27 +4,14 @@ import React, { useState, useRef } from 'react';
 import { PageContainer } from '@ant-design/pro-layout';
 import ProTable, { ProColumns, ActionType } from '@ant-design/pro-table';
 import ProDescriptions from '@ant-design/pro-descriptions';
+import * as dayjs from 'dayjs';
+import customParseFormat from 'dayjs/plugin/customParseFormat';
 import CreateForm from './components/CreateForm';
 import UpdateForm, { FormValueType } from './components/UpdateForm';
 import { TableListItem } from './data.d';
 import { getCourses, updateRule, addCourse } from './service';
 
-const hour = 24 * 60 * 60;
-const minute = 60 * 60;
-const second = 60;
-
-const timeNumToString = (timeNum: number) => {
-  const H = timeNum / hour;
-  const M = (timeNum - H * minute) / minute;
-  const S = (timeNum - H * minute * second - M * second) / second;
-
-  return `${H.toFixed(0)}:${M.toFixed(0)}:${S.toFixed(0)}`;
-};
-
-const timeStrToNumber = (timeStr: string) => {
-  const [H, M, S] = timeStr.split(':');
-  return Number(H) * hour + Number(M) * minute + Number(S) * second;
-};
+dayjs.extend(customParseFormat);
 
 /**
  * 添加节点
@@ -147,17 +134,13 @@ const TableList: React.FC<{}> = () => {
       title: '开始时间',
       dataIndex: 'startTime',
       valueType: 'time',
-      renderText: (val) => {
-        console.log(timeNumToString(val));
-        return timeNumToString(val);
-      },
+      renderText: (val) => dayjs(val, 'HH:mm:ss').format(),
     },
     {
       title: '结束时间',
       dataIndex: 'endTime',
       valueType: 'time',
-      sorter: true,
-      renderText: (val) => timeNumToString(val),
+      renderText: (val) => dayjs(val, 'HH:mm:ss').format(),
     },
     {
       title: '授课老师',
@@ -223,8 +206,6 @@ const TableList: React.FC<{}> = () => {
               ...value,
               type: Number(value.type),
               dayOfTheWeek: Number(value.dayOfTheWeek),
-              startTime: timeStrToNumber(value.startTime),
-              endTime: timeStrToNumber(value.endTime),
             };
 
             const success = await handleAdd(course);
