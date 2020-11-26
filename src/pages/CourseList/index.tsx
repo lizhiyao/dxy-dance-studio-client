@@ -8,7 +8,7 @@ import * as dayjs from 'dayjs';
 import customParseFormat from 'dayjs/plugin/customParseFormat';
 import CreateForm from './components/CreateForm';
 import UpdateForm from './components/UpdateForm';
-import { TableListItem } from './data.d';
+import { TableListItem } from './data';
 import { getCourses, updateCourse, deleteCourse } from './service';
 
 dayjs.extend(customParseFormat);
@@ -53,7 +53,6 @@ const TableList: React.FC<{}> = () => {
     {
       title: '授课老师',
       dataIndex: 'teacher',
-      sorter: true,
     },
     {
       title: '课程类型',
@@ -98,7 +97,7 @@ const TableList: React.FC<{}> = () => {
           text: '星期五',
         },
       },
-      sorter: true,
+
       renderText: (val) => {
         let dayStr = 'X';
         if (val === 1) {
@@ -130,7 +129,6 @@ const TableList: React.FC<{}> = () => {
     {
       title: '上课地址',
       dataIndex: 'address',
-      sorter: true,
     },
     {
       title: '操作',

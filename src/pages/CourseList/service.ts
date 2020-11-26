@@ -1,5 +1,5 @@
 import { request } from 'umi';
-import { TableListParams, TableListItem } from './data.d';
+import { TableListParams, TableListItem } from './data';
 
 // 获取全部课程
 export async function getCourses(params?: TableListParams) {

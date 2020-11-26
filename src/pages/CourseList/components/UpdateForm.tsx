@@ -2,7 +2,7 @@ import React from 'react';
 import { Modal } from 'antd';
 import { ProFormText, StepsForm, ProFormRadio, ProFormTimePicker } from '@ant-design/pro-form';
 import * as moment from 'moment';
-import { TableListItem } from '../data.d';
+import { TableListItem } from '../data';
 
 export interface FormValueType extends Partial<TableListItem> {
   target?: string;

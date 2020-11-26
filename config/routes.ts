@@ -19,26 +19,26 @@
     component: './Courses',
   },
   {
-    path: '/admin',
-    name: 'admin',
+    path: '/admin/courses',
+    name: 'manage-courses',
     icon: 'crown',
     access: 'canVisit',
-    component: './Admin',
-    routes: [
-      {
-        path: '/admin/courses',
-        name: 'manage-courses',
-        icon: 'smile',
-        component: './Welcome',
-      },
-    ],
+    component: './CourseList',
+    // routes: [
+    //   {
+    //     path: '/admin/courses',
+    //     name: 'manage-courses',
+    //     icon: 'table',
+    //     component: './CourseList',
+    //   },
+    // ],
   },
-  {
-    name: 'list.table-list',
-    icon: 'table',
-    path: '/list',
-    component: './ListTableList',
-  },
+  // {
+  //   name: 'list.table-list',
+  //   icon: 'table',
+  //   path: '/list',
+  //   component: './ListTableList',
+  // },
   {
     path: '/',
     redirect: '/courses',
