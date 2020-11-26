@@ -41,7 +41,7 @@
   },
   {
     path: '/',
-    redirect: '/welcome',
+    redirect: '/courses',
   },
   {
     component: './404',

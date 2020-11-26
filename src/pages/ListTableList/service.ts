@@ -18,7 +18,7 @@ export async function removeRule(params: { key: number[] }) {
   });
 }
 
-export async function addCourse(params: TableListItem) {
+export async function updateCourse(params: TableListItem) {
   return request('/dance-api/auth/update-course', {
     method: 'POST',
     data: {

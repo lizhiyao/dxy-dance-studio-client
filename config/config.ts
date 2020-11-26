@@ -3,6 +3,7 @@ import { defineConfig } from 'umi';
 import defaultSettings from './defaultSettings';
 import proxy from './proxy';
 import routes from './routes';
+import AntdDayjsWebpackPlugin from 'antd-dayjs-webpack-plugin';
 
 const { REACT_APP_ENV } = process.env;
 
@@ -47,4 +48,8 @@ export default defineConfig({
   exportStatic: {},
   // https://beta-pro.ant.design/docs/deploy-cn#%E9%83%A8%E7%BD%B2%E5%88%B0%E9%9D%9E%E6%A0%B9%E7%9B%AE%E5%BD%95
   base: 'dxy-dance',
+  // chainWebpack(memo, { env, webpack, createCSSRule }) {
+  //   // 设置 alias
+  //   memo.plugin(AntdDayjsWebpackPlugin)
+  // }
 });

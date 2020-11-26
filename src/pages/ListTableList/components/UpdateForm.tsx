@@ -1,14 +1,7 @@
 import React from 'react';
 import { Modal } from 'antd';
-import {
-  ProFormSelect,
-  ProFormText,
-  ProFormTextArea,
-  StepsForm,
-  ProFormRadio,
-  ProFormDateTimePicker,
-} from '@ant-design/pro-form';
-
+import { ProFormText, StepsForm, ProFormRadio, ProFormTimePicker } from '@ant-design/pro-form';
+import * as moment from 'moment';
 import { TableListItem } from '../data.d';
 
 export interface FormValueType extends Partial<TableListItem> {
@@ -35,7 +28,6 @@ const UpdateForm: React.FC<UpdateFormProps> = (props) => (
       return (
         <Modal
           width={640}
-          bodyStyle={{ padding: '32px 40px 48px' }}
           destroyOnClose
           title="规则配置"
           visible={props.updateModalVisible}
@@ -46,85 +38,102 @@ const UpdateForm: React.FC<UpdateFormProps> = (props) => (
         </Modal>
       );
     }}
-    onFinish={props.onSubmit}
+    onFinish={() => {
+      console.log('props.values', props.values);
+      return props.onSubmit(props.values);
+    }}
   >
     <StepsForm.StepForm
       initialValues={{
         name: props.values.name,
-        desc: props.values.desc,
+        teacher: props.values.teacher,
+        type: props.values.type,
       }}
-      title="基本信息"
+      title="课程基本信息"
     >
       <ProFormText
         name="name"
-        label="规则名称"
-        rules={[{ required: true, message: '请输入规则名称！' }]}
+        label="课程名称"
+        rules={[{ required: true, message: '请输入课程名称！' }]}
       />
-      <ProFormTextArea
-        name="desc"
-        label="规则描述"
-        placeholder="请输入至少五个字符"
-        rules={[{ required: true, message: '请输入至少五个字符的规则描述！', min: 5 }]}
-      />
-    </StepsForm.StepForm>
-    <StepsForm.StepForm
-      initialValues={{
-        target: '0',
-        template: '0',
-      }}
-      title="配置规则属性"
-    >
-      <ProFormSelect
-        name="target"
-        label="监控对象"
-        valueEnum={{
-          0: '表一',
-          1: '表二',
-        }}
-      />
-      <ProFormSelect
-        name="template"
-        label="规则模板"
-        valueEnum={{
-          0: '规则模板一',
-          1: '规则模板二',
-        }}
+      <ProFormText
+        name="teacher"
+        label="授课老师"
+        rules={[{ required: true, message: '请输入授课老师名字！' }]}
       />
       <ProFormRadio.Group
         name="type"
         label="规则类型"
         options={[
           {
-            value: '0',
-            label: '强',
+            value: 1,
+            label: '基础课',
           },
           {
-            value: '1',
-            label: '弱',
+            value: 2,
+            label: '进阶课',
           },
         ]}
+        rules={[{ required: true, message: '请选择课程类型！' }]}
       />
     </StepsForm.StepForm>
     <StepsForm.StepForm
       initialValues={{
-        type: '1',
-        frequency: 'month',
+        dayOfTheWeek: props.values.dayOfTheWeek,
+        // ProFormTimePicker 内部使用 moment.js，尝试使用 day.js 未成功 https://ant.design/docs/react/replace-moment-cn，所以继续使用 moment
+        startTime: moment(props.values.startTime, moment.HTML5_FMT.TIME_SECONDS),
+        endTime: moment(props.values.endTime, moment.HTML5_FMT.TIME_SECONDS),
       }}
-      title="设定调度周期"
+      title="课程时间"
     >
-      <ProFormDateTimePicker
-        name="time"
+      <ProFormRadio.Group
+        name="dayOfTheWeek"
+        label="星期几"
+        options={[
+          {
+            value: 1,
+            label: '星期一',
+          },
+          {
+            value: 2,
+            label: '星期二',
+          },
+          {
+            value: 3,
+            label: '星期三',
+          },
+          {
+            value: 4,
+            label: '星期四',
+          },
+          {
+            value: 5,
+            label: '星期五',
+          },
+        ]}
+      />
+      <ProFormTimePicker
+        name="startTime"
         label="开始时间"
         rules={[{ required: true, message: '请选择开始时间！' }]}
       />
-      <ProFormSelect
-        name="frequency"
-        label="监控对象"
-        width="xs"
-        valueEnum={{
-          month: '月',
-          week: '周',
-        }}
+      <ProFormTimePicker
+        name="endTime"
+        label="结束时间"
+        rules={[{ required: true, message: '请选择开始时间！' }]}
+      />
+    </StepsForm.StepForm>
+    <StepsForm.StepForm
+      initialValues={{
+        address: props.values.address,
+      }}
+      title="课程地点"
+    >
+      <ProFormText
+        name="address"
+        label="上课地址"
+        width="l"
+        rules={[{ required: true, message: '请输入上课地址！' }]}
       />
     </StepsForm.StepForm>
   </StepsForm>

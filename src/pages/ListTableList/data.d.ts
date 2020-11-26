@@ -11,10 +11,12 @@ export interface TableListItem {
   updatedAt: Date;
   createdAt: Date;
   progress: number;
+  teacher: string;
   type: string;
   dayOfTheWeek: string;
   startTime: string;
   endTime: string;
+  address: string;
 }
 
 export interface TableListPagination {

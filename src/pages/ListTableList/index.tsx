@@ -7,9 +7,9 @@ import ProDescriptions from '@ant-design/pro-descriptions';
 import * as dayjs from 'dayjs';
 import customParseFormat from 'dayjs/plugin/customParseFormat';
 import CreateForm from './components/CreateForm';
-import UpdateForm, { FormValueType } from './components/UpdateForm';
+import UpdateForm from './components/UpdateForm';
 import { TableListItem } from './data.d';
-import { getCourses, updateRule, addCourse } from './service';
+import { getCourses, updateCourse } from './service';
 
 dayjs.extend(customParseFormat);
 
@@ -17,39 +17,19 @@ dayjs.extend(customParseFormat);
  * 添加节点
  * @param fields
  */
-const handleAdd = async (fields: any) => {
+const handleUpdate = async (fields: any) => {
   const hide = message.loading('正在添加');
   try {
-    await addCourse({ ...fields, id: 0 });
+    const { data, error } = await updateCourse({ ...fields, id: fields.id || 0 });
     hide();
-    message.success('添加成功');
-    return true;
+    if (data) {
+      message.success('添加成功');
+      return true;
+    }
+    throw new Error(error);
   } catch (error) {
     hide();
     message.error('添加失败请重试！');
-    return false;
-  }
-};
-
-/**
- * 更新节点
- * @param fields
- */
-const handleUpdate = async (fields: FormValueType) => {
-  const hide = message.loading('正在配置');
-  try {
-    await updateRule({
-      name: fields.name,
-      desc: fields.desc,
-      key: fields.key,
-    });
-    hide();
-
-    message.success('配置成功');
-    return true;
-  } catch (error) {
-    hide();
-    message.error('配置失败请重试！');
     return false;
   }
 };
@@ -69,6 +49,11 @@ const TableList: React.FC<{}> = () => {
     {
       title: '课程名称',
       dataIndex: 'name',
+    },
+    {
+      title: '授课老师',
+      dataIndex: 'teacher',
+      sorter: true,
     },
     {
       title: '课程类型',
@@ -143,11 +128,6 @@ const TableList: React.FC<{}> = () => {
       renderText: (val) => dayjs(val, 'HH:mm:ss').format(),
     },
     {
-      title: '授课老师',
-      dataIndex: 'teacher',
-      sorter: true,
-    },
-    {
       title: '上课地址',
       dataIndex: 'address',
       sorter: true,
@@ -186,9 +166,6 @@ const TableList: React.FC<{}> = () => {
         headerTitle="课程列表"
         actionRef={actionRef}
         rowKey="id"
-        search={{
-          labelWidth: 120,
-        }}
         toolBarRender={() => [
           <Button key="1" type="primary" onClick={() => handleModalVisible(true)}>
             <PlusOutlined /> 新建
@@ -208,7 +185,7 @@ const TableList: React.FC<{}> = () => {
               dayOfTheWeek: Number(value.dayOfTheWeek),
             };
 
-            const success = await handleAdd(course);
+            const success = await handleUpdate(course);
             if (success) {
               handleModalVisible(false);
               if (actionRef.current) {
@@ -225,6 +202,11 @@ const TableList: React.FC<{}> = () => {
       {stepFormValues && Object.keys(stepFormValues).length ? (
         <UpdateForm
           onSubmit={async (value) => {
+            console.log(value);
+            // const course = {
+            //   ...value,
+            //   id: this.props.value.id,
+            // };
             const success = await handleUpdate(value);
             if (success) {
               handleUpdateModalVisible(false);
