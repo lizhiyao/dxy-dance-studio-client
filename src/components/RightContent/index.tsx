@@ -51,11 +51,11 @@ const GlobalHeaderRight: React.FC<{}> = () => {
         //   console.log('input', value);
         // }}
       /> */}
-      <Tooltip title="使用文档">
+      <Tooltip title="课程说明文档">
         <span
           className={styles.action}
           onClick={() => {
-            window.location.href = 'https://pro.ant.design/docs/getting-started';
+            window.location.href = 'https://shimo.im/docs/CphdP99Pjpt6QHg6';
           }}
         >
           <QuestionCircleOutlined />

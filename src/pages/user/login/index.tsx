@@ -43,11 +43,12 @@ const Login: React.FC<{}> = () => {
     try {
       // 登录
       const msg = await accountLogin({ ...values });
+      const { error } = msg;
 
-      if (msg.error && msg.error.code === 10002) {
+      if (error && error.code) {
         // 如果失败去设置用户错误信息
         setUserLoginState(msg);
-        message.success(msg.error.message);
+        message.warn(error.message);
       } else {
         message.success('登录成功！');
         goto();

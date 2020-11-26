@@ -8,12 +8,11 @@ export async function getCourses(params?: TableListParams) {
   }).then((ret) => ret.data);
 }
 
-export async function removeRule(params: { key: number[] }) {
-  return request('/api/rule', {
+export async function deleteCourse(id: number) {
+  return request('/dance-api/auth/delete-course', {
     method: 'POST',
     data: {
-      ...params,
-      method: 'delete',
+      id,
     },
   });
 }
@@ -24,16 +23,6 @@ export async function updateCourse(params: TableListItem) {
     data: {
       ...params,
       method: 'post',
-    },
-  });
-}
-
-export async function updateRule(params: TableListParams) {
-  return request('/api/rule', {
-    method: 'POST',
-    data: {
-      ...params,
-      method: 'update',
     },
   });
 }

@@ -1,5 +1,5 @@
 import { PlusOutlined } from '@ant-design/icons';
-import { Button, message, Drawer } from 'antd';
+import { Button, message, Drawer, Popconfirm } from 'antd';
 import React, { useState, useRef } from 'react';
 import { PageContainer } from '@ant-design/pro-layout';
 import ProTable, { ProColumns, ActionType } from '@ant-design/pro-table';
@@ -9,7 +9,7 @@ import customParseFormat from 'dayjs/plugin/customParseFormat';
 import CreateForm from './components/CreateForm';
 import UpdateForm from './components/UpdateForm';
 import { TableListItem } from './data.d';
-import { getCourses, updateCourse } from './service';
+import { getCourses, updateCourse, deleteCourse } from './service';
 
 dayjs.extend(customParseFormat);
 
@@ -146,15 +146,20 @@ const TableList: React.FC<{}> = () => {
         >
           编辑
         </a>,
-        <a
+        <Popconfirm
           key="delete"
-          onClick={() => {
-            handleUpdateModalVisible(true);
-            setStepFormValues(record);
+          title="确定删除该课程吗？"
+          okText="删除"
+          cancelText="取消"
+          onConfirm={() => {
+            deleteCourse(record.id);
+            if (actionRef.current) {
+              actionRef.current.reload();
+            }
           }}
         >
-          删除
-        </a>,
+          <a href="#">删除</a>
+        </Popconfirm>,
       ],
     },
   ];
@@ -174,7 +179,6 @@ const TableList: React.FC<{}> = () => {
         request={(params, sorter, filter) => getCourses({ ...params, sorter, filter })}
         columns={columns}
       />
-
       {/* 新增课程 */}
       <CreateForm onCancel={() => handleModalVisible(false)} modalVisible={createModalVisible}>
         <ProTable<TableListItem, TableListItem>
@@ -198,15 +202,10 @@ const TableList: React.FC<{}> = () => {
           columns={columns}
         />
       </CreateForm>
-
+      {/* 更新课程 */}
       {stepFormValues && Object.keys(stepFormValues).length ? (
         <UpdateForm
           onSubmit={async (value) => {
-            console.log(value);
-            // const course = {
-            //   ...value,
-            //   id: this.props.value.id,
-            // };
             const success = await handleUpdate(value);
             if (success) {
               handleUpdateModalVisible(false);
