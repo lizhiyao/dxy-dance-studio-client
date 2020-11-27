@@ -24,21 +24,7 @@
     icon: 'crown',
     access: 'canVisit',
     component: './CourseList',
-    // routes: [
-    //   {
-    //     path: '/admin/courses',
-    //     name: 'manage-courses',
-    //     icon: 'table',
-    //     component: './CourseList',
-    //   },
-    // ],
   },
-  // {
-  //   name: 'list.table-list',
-  //   icon: 'table',
-  //   path: '/list',
-  //   component: './ListTableList',
-  // },
   {
     path: '/',
     redirect: '/courses',

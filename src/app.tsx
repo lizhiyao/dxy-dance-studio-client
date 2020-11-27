@@ -25,12 +25,15 @@ export async function getInitialState(): Promise<{
       const currentUser = await queryCurrent();
       return currentUser.data;
     } catch (error) {
-      history.push('/user/login');
+      // history.push('/user/login');
     }
     return undefined;
   };
-  // 如果是登录页面，不执行
-  if (history.location.pathname !== '/user/login') {
+  // 如果是登录页面或者非管理页面，不执行
+  if (
+    history.location.pathname !== '/user/login' ||
+    history.location.href.indexOf('/admin/') > -1
+  ) {
     const currentUser = await fetchUserInfo();
     return {
       fetchUserInfo,
@@ -56,8 +59,13 @@ export const layout = ({
     onPageChange: () => {
       const { currentUser } = initialState;
       const { location } = history;
-      // 如果没有登录，重定向到 login
-      if (!currentUser && location.pathname !== '/user/login') {
+
+      // 如果是管理页面且没有登录，重定向到 login
+      if (
+        window.location.href.indexOf('/admin/') > -1 &&
+        !currentUser &&
+        location.pathname !== '/user/login'
+      ) {
         history.push('/user/login');
       }
     },
