@@ -14,7 +14,7 @@ const Settings: LayoutSettings & {
   colorWeak: false,
   title: 'DXY Dance Studio',
   pwa: false,
-  logo: 'https://gw.alipayobjects.com/zos/rmsportal/KDpgvguMpGfqaHPjicRK.svg',
+  logo: 'https://img1.dxycdn.com/2020/1127/268/3958360705116989443-22.png',
   iconfontUrl: '',
 };
 
