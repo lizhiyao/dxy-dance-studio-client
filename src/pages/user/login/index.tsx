@@ -68,7 +68,11 @@ const Login: React.FC<{}> = () => {
         <div className={styles.top}>
           <div className={styles.header}>
             <Link to="/">
-              <img alt="logo" className={styles.logo} src="/logo.svg" />
+              <img
+                alt="logo"
+                className={styles.logo}
+                src="'https://img1.dxycdn.com/2020/1127/268/3958360705116989443-22.png'"
+              />
               <span className={styles.title}>DXY Dance Studio</span>
             </Link>
           </div>
